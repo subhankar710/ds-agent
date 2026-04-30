@@ -1,0 +1,11 @@
+name: ds-agent
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  # The rest of our Python deps install via pip from pyproject.toml
+  # to keep dependency resolution simple. We use conda only for
+  # the Python version and pip itself.
+  - pip:
+      - -e .[dev]

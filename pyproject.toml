@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ds-agent"
+version = "0.0.1"
+description = "A learning-first Data Science Agent: NL questions over Olist via Claude + DuckDB."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "Subhankar Patra", email = "subhankar710@gmail.com" }
+]
+
+# Runtime dependencies — what the package needs to actually run.
+dependencies = [
+  "anthropic>=0.40.0",          # Anthropic Python SDK
+  "pydantic>=2.7",              # Data shapes + validation
+  "pydantic-settings>=2.4",     # Typed settings from env vars
+  "python-dotenv>=1.0",         # Loads .env at startup
+  "typer>=0.12",                # CLI framework
+  "rich>=13.7",                 # Pretty terminal output
+  "duckdb>=1.0",                # Embedded analytical SQL (Step 2)
+]
+
+# Dev-only dependencies — only installed with `pip install -e .[dev]`.
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-mock>=3.12",          # Convenient mocker fixture
+  "ruff>=0.6",                  # Lint + format
+]
+
+# CLI entrypoint — installs a `ds-agent` command in the env's bin/.
+[project.scripts]
+ds-agent = "ds_agent.cli:app"
+
+# Tells setuptools where the package source lives.
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Ruff config — modern Python linter + formatter, single tool.
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "E", "W",   # pycodestyle (errors, warnings)
+  "F",        # pyflakes (unused imports, undefined names)
+  "I",        # isort (import order)
+  "B",        # bugbear (likely bugs)
+  "UP",       # pyupgrade (modern Python idioms)
+]
+
+# Pytest config — where tests live, how to run them.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q"

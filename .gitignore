@@ -1,0 +1,32 @@
+# Secrets — never commit
+.env
+
+# Data files (downloaded separately)
+data/
+*.duckdb
+*.duckdb.wal
+
+# Python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Testing / tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Notebooks — scratch only; demos are committed
+notebooks/scratch/
+
+# Local trace + eval result stores (filled at runtime)
+traces/
+evals_results/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
