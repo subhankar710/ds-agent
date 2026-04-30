@@ -9,6 +9,14 @@ This spec is the output of a brainstorming session and the input to a forthcomin
 
 ---
 
+## Status Log
+
+Append-only project state log. Most recent entry on top. Add a line at every natural stopping point so future-Subhankar (or a fresh Claude session) can resume cold.
+
+- **2026-04-30 EOD** — Lesson 1 complete and merged to main. Next session: write Lesson 2 plan (DuckDB + Olist).
+
+---
+
 ## 1. Problem Statement
 
 ### 1.1 Persona
