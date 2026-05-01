@@ -16,3 +16,12 @@ def mock_llm_client(fake_settings) -> MagicMock:
     mock.complete.return_value = "default mocked response"
     return mock
 
+@pytest.fixture
+def in_memory_db():
+    """A Database backed by an in-memory DuckDB. Auto-closed after the test."""
+    from ds_agent.db import Database
+    db = Database(":memory:")
+    try:
+        yield db
+    finally:
+        db.close()
