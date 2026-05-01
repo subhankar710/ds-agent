@@ -14,6 +14,7 @@ This spec is the output of a brainstorming session and the input to a forthcomin
 Append-only project state log. Most recent entry on top. Add a line at every natural stopping point so future-Subhankar (or a fresh Claude session) can resume cold.
 
 - **2026-04-30 EOD** — Lesson 1 complete and merged to main. Next session: write Lesson 2 plan (DuckDB + Olist).
+- **2026-05-01 EOD** — Lesson 2 complete and merged to main. Next: write Lesson 3 plan (tool use — `run_sql` + `get_relevant_schema`).
 
 ---
 
