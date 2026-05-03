@@ -33,3 +33,30 @@ class LLMClient:
             raise LLMClientError("LLM request failed") from e
 
         return response.content[0].text
+
+    def chat(
+        self,
+        messages: list[dict],
+        tools: list[dict] | None = None,
+        system: str | None = None,
+        max_tokens: int = 1024,
+    ):
+        """Lower-level call: full message history + optional tools.
+
+        Returns the SDK's Message object unchanged so callers can inspect
+        `stop_reason` and iterate over `content` blocks (needed by the agent loop).
+        """
+        kwargs = {
+            "model": self._settings.anthropic_model,
+            "max_tokens": max_tokens,
+            "messages": messages,
+        }
+        if system is not None:
+            kwargs["system"] = system
+        if tools is not None:
+            kwargs["tools"] = tools
+
+        try:
+            return self._client.messages.create(**kwargs)
+        except Exception as e:
+            raise LLMClientError("LLM request failed") from e

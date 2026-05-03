@@ -57,4 +57,51 @@ def test_complete_passes_system_prompt_when_provided(fake_settings, monkeypatch)
     fake_anthropic_client.messages.create.assert_called_once()
     call_kwargs = fake_anthropic_client.messages.create.call_args.kwargs
     assert call_kwargs["system"] == "be terse"
-    
+
+
+def test_chat_returns_sdk_message_object_with_tool_use(fake_settings, monkeypatch):
+    """chat() must return the SDK Message unchanged so the agent loop can read
+    stop_reason and iterate over content blocks (incl. tool_use blocks)."""
+    from unittest.mock import MagicMock
+
+    # Fake a tool_use response: stop_reason="tool_use", content has a tool_use block.
+    fake_tool_use_block = MagicMock(
+        type="tool_use",
+        id="toolu_test_123",
+        name="run_sql",
+        input={"sql": "SELECT 1"},
+    )
+    fake_response = MagicMock(stop_reason="tool_use", content=[fake_tool_use_block])
+
+    fake_anthropic_client = MagicMock()
+    fake_anthropic_client.messages.create.return_value = fake_response
+
+    client = LLMClient(fake_settings)
+    monkeypatch.setattr(client, "_client", fake_anthropic_client)
+
+    tools = [
+        {
+            "name": "run_sql",
+            "description": "Run a SQL query.",
+            "input_schema": {
+                "type": "object",
+                "properties": {"sql": {"type": "string"}},
+                "required": ["sql"],
+            },
+        }
+    ]
+    messages = [{"role": "user", "content": "How many orders?"}]
+
+    result = client.chat(messages=messages, tools=tools, system="be terse")
+
+    # Returned the SDK object as-is (no transformation).
+    assert result is fake_response
+    assert result.stop_reason == "tool_use"
+
+    # SDK was called with the right kwargs.
+    fake_anthropic_client.messages.create.assert_called_once()
+    call_kwargs = fake_anthropic_client.messages.create.call_args.kwargs
+    assert call_kwargs["model"] == "claude-sonnet-4-6"
+    assert call_kwargs["messages"] == messages
+    assert call_kwargs["tools"] == tools
+    assert call_kwargs["system"] == "be terse"
